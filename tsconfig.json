@@ -1,0 +1,47 @@
+{
+  "compilerOptions": {
+    /* =========================
+       Language
+    ========================= */
+    "target": "ES2023",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    /* =========================
+       Project Structure
+    ========================= */
+    "rootDir": "./src",
+    "outDir": "./dist",
+    /* =========================
+       Strict Type Safety
+    ========================= */
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    /* =========================
+       Modules
+    ========================= */
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "verbatimModuleSyntax": true,
+    /* =========================
+       Output
+    ========================= */
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    /* =========================
+       Performance
+    ========================= */
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true,
+    "ignoreDeprecations": "6.0",
+    /* =========================
+       Types
+    ========================= */
+    "types": ["node"]
+  },
+  "include": ["src/**/*.ts", "src/**/*.d.ts"],
+  "exclude": ["node_modules", "dist"]
+}

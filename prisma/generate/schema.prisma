@@ -1,0 +1,196 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+generator client {
+  provider = "prisma-client-js"
+  output   = "generate"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+enum Role {
+  USER
+  SELLER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  CANCELLED
+  SHIPPED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+// Models
+
+model User {
+  id        String @id @default(uuid())
+  firstName String
+  lastName  String
+  userName  String @unique
+  email     String @unique
+  password  String
+  role      Role   @default(USER)
+
+  // Relations
+  products  Product[]
+  orders    Order[]
+  addresses Address[]
+  cart      Cart?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+}
+
+model Product {
+  id            String  @id @default(uuid())
+  productName   String
+  productDesc   String  @db.Text
+  productImages Json // Stores image URLs array
+  price         Decimal @db.Decimal(10, 2)
+  rating        Float   @default(0.0)
+  isActive      Boolean @default(true)
+
+  // Foreign Keys & Relations
+  createdById String
+  user        User   @relation(fields: [createdById], references: [id], onDelete: Cascade)
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  inventory  Inventory?
+  orderItems OrderItem[]
+  cartItems  CartItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Performance Indexes for Filtering and Search
+  @@index([categoryId, price])
+  @@index([productName])
+}
+
+model Inventory {
+  id       String @id @default(uuid())
+  quantity Int    @default(0) // Available physical stock
+  reserved Int    @default(0) // Locked during checkout flow
+  version  Int    @default(1) // Version counter for Optimistic Locking
+
+  // Foreign Keys & Relations
+  productId String  @unique
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id       String    @id @default(uuid())
+  name     String    @unique
+  products Product[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Cart {
+  id String @id @default(uuid())
+
+  // Foreign Keys & Relations (1-to-1 with User)
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  items CartItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CartItem {
+  id       String @id @default(uuid())
+  quantity Int    @default(1)
+
+  // Foreign Keys & Relations
+  cartId String
+  cart   Cart   @relation(fields: [cartId], references: [id], onDelete: Cascade)
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Composite constraints & indexes
+  @@unique([cartId, productId])
+  @@index([cartId])
+}
+
+model Order {
+  id            String        @id @default(uuid())
+  totalAmount   Decimal       @db.Decimal(10, 2)
+  totalItem     Int
+  status        OrderStatus   @default(PENDING)
+  paymentStatus PaymentStatus @default(PENDING)
+
+  // Foreign Keys & Relations
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  addressId String
+  address   Address @relation(fields: [addressId], references: [id], onDelete: Restrict)
+
+  orderItems OrderItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, createdAt])
+}
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  unitPrice Decimal @db.Decimal(10, 2) // Snapshotted price at time of order
+  quantity  Int
+
+  // Foreign Keys & Relations
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Address {
+  id           String  @id @default(uuid())
+  addressLine1 String
+  addressLine2 String?
+  city         String
+  state        String
+  pincode      String
+  country      String
+  phoneNumber  String
+
+  // Foreign Keys & Relations
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  orders Order[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
