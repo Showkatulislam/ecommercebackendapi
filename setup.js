@@ -82,4 +82,3 @@ DB_NAME = "ecommerce_db"
 DATABASE_URL = "mysql://root@localhost:3306/ecommerce_db"
 JWT_SECRET = "super-secret-key-change-this-in-production"
 JWT_EXPIRES_IN = "7d" */
-

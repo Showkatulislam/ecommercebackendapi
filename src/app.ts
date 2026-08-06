@@ -6,6 +6,10 @@ import morgan from 'morgan';
 import { AppError } from './utils/AppError.js';
 import { errorMiddlware } from './middlewares/error.middleware.js';
 import { loggerMiddleware } from './middlewares/logger.middleware.js';
+import authRouter from './modules/auth/auth.route.js';
+import cookieParser from 'cookie-parser';
+import CategoryRouter from './modules/category/category.route.js';
+import productRouter from './modules/product/product.route.js';
 class App {
   public app: Application;
 
@@ -22,12 +26,10 @@ class App {
 
     // 2. Cross-Origin Resource Sharing
     this.app.use(cors());
-
-    this.app.use(loggerMiddleware);
-
     // 3. Body Parsing
     this.app.use(express.json({ limit: '10mb' }));
     this.app.use(express.urlencoded({ extended: true }));
+    this.app.use(cookieParser())
 
     // 4. HTTP Request Logging (Development/Production)
     if (process.env.NODE_ENV === 'development') {
@@ -44,6 +46,9 @@ class App {
     });
 
     // API v1 Routes
+    this.app.use('/api/v1/auth', authRouter);
+    this.app.use('/api/v1/category', CategoryRouter)
+    this.app.use('/api/v1/product',productRouter)
 
     // 404 Catch-all for unhandled routes (FIXED FOR PATH-TO-REGEXP v8+)
     this.app.use('{*path}', (req: Request, res: Response, next: NextFunction) => {

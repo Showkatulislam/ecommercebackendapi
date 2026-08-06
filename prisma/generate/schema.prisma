@@ -34,24 +34,34 @@ enum PaymentStatus {
 // Models
 
 model User {
-  id        String @id @default(uuid())
+  id        String  @id @default(uuid())
   firstName String
-  lastName  String
-  userName  String @unique
-  email     String @unique
+  lastName  String?
+  userName  String  @unique
+  email     String  @unique
   password  String
-  role      Role   @default(USER)
+  role      Role    @default(USER)
 
   // Relations
-  products  Product[]
-  orders    Order[]
-  addresses Address[]
-  cart      Cart?
+  products     Product[]
+  orders       Order[]
+  addresses    Address[]
+  cart         Cart?
+  refreshToken RefreshToken[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([email])
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+
+  user User @relation(fields: [userId], references: [id])
 }
 
 model Product {
@@ -97,9 +107,10 @@ model Inventory {
 }
 
 model Category {
-  id       String    @id @default(uuid())
-  name     String    @unique
-  products Product[]
+  id          String    @id @default(uuid())
+  name        String    @unique
+  description String
+  products    Product[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

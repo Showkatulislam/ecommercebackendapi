@@ -14,7 +14,7 @@ const envSchema = z.object({
   DB_HOST: z.string().default('localhost'),
   DB_PORT: z
     .string()
-    .default('3306')
+    .default('3307')
     .transform((val) => parseInt(val, 10)),
   DB_USER: z.string().default('root'),
   DB_PASSWORD: z.string().default(''),
