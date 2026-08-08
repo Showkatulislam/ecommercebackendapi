@@ -70,12 +70,12 @@ model Product {
   productDesc   String  @db.Text
   productImages Json // Stores image URLs array
   price         Decimal @db.Decimal(10, 2)
-  rating        Float   @default(0.0)
+  rating        Int     @default(0)
   isActive      Boolean @default(true)
-
+  stock         Int     @default(0)
   // Foreign Keys & Relations
-  createdById String
-  user        User   @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdById   String
+  user          User    @relation(fields: [createdById], references: [id], onDelete: Cascade)
 
   categoryId String
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
@@ -107,10 +107,10 @@ model Inventory {
 }
 
 model Category {
-  id       String    @id @default(uuid())
-  name     String    @unique
+  id          String    @id @default(uuid())
+  name        String    @unique
   description String
-  products Product[]
+  products    Product[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

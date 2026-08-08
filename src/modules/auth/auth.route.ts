@@ -9,10 +9,10 @@ const authRouter = Router();
 authRouter.post('/register', validate(RegisterUserSchema), authController.registerUser);
 authRouter.post('/login', validate(loginUserSchema), authController.loginUser);
 
-authRouter.get("/me", authenticate, authController.getCurrentUser)
+authRouter.get('/me', authenticate, authController.getCurrentUser);
 
-authRouter.post("/logout",validate(refreshTokenSchema),authController.logOutUser)
+authRouter.post('/logout', validate(refreshTokenSchema), authController.logOutUser);
 
-authRouter.post("/logout-all-device",authenticate,authController.logOutAllDevice)
+authRouter.post('/logout-all-device', authenticate, authController.logOutAllDevice);
 
 export default authRouter;

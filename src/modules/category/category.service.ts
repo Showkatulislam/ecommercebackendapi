@@ -1,44 +1,44 @@
-import { AppError } from "../../utils/AppError.js";
-import { sendResponse } from "../../utils/sendResponse.js";
-import type { IcategoryInterface } from "./category.interface.js";
-import type { CreateCategoryDTO, updateCategoryDTO } from "./category.schema.js";
+import { AppError } from '../../utils/AppError.js';
+import { sendResponse } from '../../utils/sendResponse.js';
+import type { IcategoryInterface } from './category.interface.js';
+import type { CreateCategoryDTO, updateCategoryDTO } from './category.schema.js';
 
-export class CategoryService{
-    private readonly categoryrepo;
-    constructor(rep:IcategoryInterface) {
-        this.categoryrepo = rep
-    }
-    async createCategory(body: CreateCategoryDTO) {
-       const result = await this.categoryrepo.createCategory(body)
-        return result
-    }
-    async getAllcategory() {
-        const result = await this.categoryrepo.getAllCategory()
-        return result
-    }
+export class CategoryService {
+  private readonly categoryrepo;
+  constructor(rep: IcategoryInterface) {
+    this.categoryrepo = rep;
+  }
+  async createCategory(body: CreateCategoryDTO) {
+    const result = await this.categoryrepo.createCategory(body);
+    return result;
+  }
+  async getAllcategory() {
+    const result = await this.categoryrepo.getAllCategory();
+    return result;
+  }
 
-    async updateCategory(body: updateCategoryDTO, categoryId: string) {
-        const category = await this.categoryrepo.getCategoryById(categoryId)
-        console.log(category)
-        
-        if (!category) {
-            throw new AppError("Category is not Found.",404)
-        }
-        
-        const result = await this.categoryrepo.updateCategory(body, categoryId);
+  async updateCategory(body: updateCategoryDTO, categoryId: string) {
+    const category = await this.categoryrepo.getCategoryById(categoryId);
+    console.log(category);
 
-        return result
+    if (!category) {
+      throw new AppError('Category is not Found.', 404);
     }
 
-    async deleteCategory(categoryId: string) {
-        const category = await this.categoryrepo.getCategoryById(categoryId)
+    const result = await this.categoryrepo.updateCategory(body, categoryId);
 
-        if (!category) {
-            throw new AppError("Category is not Found.", 404)
-        }
+    return result;
+  }
 
-        await this.categoryrepo.deleteCategory(categoryId)
+  async deleteCategory(categoryId: string) {
+    const category = await this.categoryrepo.getCategoryById(categoryId);
 
-        return true;
+    if (!category) {
+      throw new AppError('Category is not Found.', 404);
     }
+
+    await this.categoryrepo.deleteCategory(categoryId);
+
+    return true;
+  }
 }

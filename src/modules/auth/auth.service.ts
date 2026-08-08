@@ -38,8 +38,8 @@ export class AuthService {
     };
   }
   async loginUser(body: LoginUserDTO) {
-    const { email, password } = body
-    console.log(email)
+    const { email, password } = body;
+    console.log(email);
 
     const existingUser = await this.authrepository.findByUserEmail(email);
 
@@ -73,22 +73,22 @@ export class AuthService {
   }
   async getCurrentUser(userId: string) {
     const user = await this.authrepository.getcurrentUser(userId);
-    return toUserResponse(user)
+    return toUserResponse(user);
   }
   async logOutUser(body: RefreshTokenDTO) {
-    const { refreshToken } = body
+    const { refreshToken } = body;
     const hashedRefreshToken = hashRefreshToken(refreshToken);
-    const existingRefeshToken = await this.authrepository.findRefreshToken(hashedRefreshToken)
+    const existingRefeshToken = await this.authrepository.findRefreshToken(hashedRefreshToken);
     if (!existingRefeshToken) {
-      throw new AppError("Invalid refresh Token.", 404)
+      throw new AppError('Invalid refresh Token.', 404);
     }
 
-    await this.authrepository.deleteRefreshTokenByToken(hashedRefreshToken)
+    await this.authrepository.deleteRefreshTokenByToken(hashedRefreshToken);
 
-    return true
+    return true;
   }
   async logOutAllDevice(userId: string) {
-    await this.authrepository.deleteAllRefreshTokenByUserId(userId)
-    return true
+    await this.authrepository.deleteAllRefreshTokenByUserId(userId);
+    return true;
   }
 }

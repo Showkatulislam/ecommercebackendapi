@@ -10,9 +10,8 @@ export interface IAuthRepository {
     userId: string;
     expiresAt: Date;
   }): Promise<RefreshToken>;
-  getcurrentUser(userId: string): Promise<User>,
-  findRefreshToken(token: string): Promise<RefreshToken | null>
-  deleteRefreshTokenByToken(token: string): Promise<any>,
+  getcurrentUser(userId: string): Promise<User>;
+  findRefreshToken(token: string): Promise<RefreshToken | null>;
+  deleteRefreshTokenByToken(token: string): Promise<any>;
   deleteAllRefreshTokenByUserId(userId: string): Promise<any>;
-  
 }

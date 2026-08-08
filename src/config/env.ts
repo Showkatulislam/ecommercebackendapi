@@ -24,6 +24,9 @@ const envSchema = z.object({
   // JWT Security
   JWT_SECRET: z.string().min(10, 'JWT_SECRET must be at least 10 characters long'),
   JWT_EXPIRES_IN: z.string().default('7d'),
+  CLOUDINARY_CLOUD_NAME: z.string().min(2, 'Cloudinary name is required.'),
+  CLOUDINAERY_API_KEY: z.string().min(2, 'Cloudinary api key is required.'),
+  CLOUDINAERY_API_KEY_SECRET: z.string().min(2, 'Cloudinary api secret is required.'),
 });
 
 const _env = envSchema.safeParse(process.env);

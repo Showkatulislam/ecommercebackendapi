@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import type { Response } from 'express';
 import { env } from '../config/env.js';
-import crypto from "crypto"
+import crypto from 'crypto';
 export const hashedPassword = (password: string) => {
   return bcrypt.hash(password, 12);
 };
@@ -27,19 +27,19 @@ export const setCookie = (res: Response, token: string, refreshToken: string) =>
 };
 
 export const hashRefreshToken = (refreshToken: string) => {
-  return crypto.createHash("sha256").update(refreshToken).digest("hex");
+  return crypto.createHash('sha256').update(refreshToken).digest('hex');
 };
 
 export const destroyCookies = (res: Response) => {
-  res.clearCookie("accessToken", {
+  res.clearCookie('accessToken', {
     httpOnly: true,
-    secure: env.NODE_ENV === "production",
-    sameSite: "lax",
+    secure: env.NODE_ENV === 'production',
+    sameSite: 'lax',
   });
 
-  res.clearCookie("refreshToken", {
+  res.clearCookie('refreshToken', {
     httpOnly: true,
-    secure: env.NODE_ENV === "production",
-    sameSite: "lax",
+    secure: env.NODE_ENV === 'production',
+    sameSite: 'lax',
   });
 };

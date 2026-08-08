@@ -1,31 +1,22 @@
-import type { Request, Response, NextFunction } from 'express';
-import { ZodError, ZodObject } from 'zod';
+import type { NextFunction, Request, Response } from 'express';
+import { ZodObject } from 'zod';
 import { AppError } from '../utils/AppError.js';
 
-export const validate = (schema: ZodObject) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      // Validate incoming request structure (body, query, params)
-      const parsed = await schema.parseAsync({
-        body: req.body,
-        query: req.query,
-        params: req.params,
-      });
+export const validate =
+  (schema: ZodObject<any>) => (req: Request, res: Response, next: NextFunction) => {
+    console.log('BODY:', req.body);
+    const result = schema.safeParse(req.body);
 
-      // Replace req.body with the sanitized/parsed data
-      req.body = parsed.body;
-      next();
-    } catch (error) {
-      if (error instanceof ZodError) {
-        // ZodError provides an 'issues' array cleanly
-        const errorMessage = error.issues
-          .map((issue) => `${issue.path.slice(1).join('.')}: ${issue.message}`)
-          .join(', ');
+    if (!result.success) {
+      const errors = result.error.issues.map((err) => ({
+        field: err.path.join(''),
+        message: err.message,
+      }));
 
-        return next(new AppError(`Validation Error: ${errorMessage}`, 400));
-      }
-
-      next(error);
+      throw new AppError(errors.map((e) => `${e.field}: ${e.message}`).join(', '), 400);
     }
+
+    req.body = result.data;
+
+    next();
   };
-};
